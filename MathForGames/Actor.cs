@@ -69,7 +69,7 @@ namespace MathForGames
             if (_velocity.Magnitude <= 0)
                 return;
 
-            _facing = Velocity.Normalized;
+            Forward = Velocity.Normalized;
         }
 
         public virtual void Start()

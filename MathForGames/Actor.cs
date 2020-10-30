@@ -11,6 +11,9 @@ namespace MathForGames
         protected char _icon = ' ';
         protected Vector2 _velocity;
         protected Matrix3 _transform;
+        protected Matrix3 _translation;
+        protected Matrix3 _rotation;
+        protected Matrix3 _scale;
         protected ConsoleColor _color;
         protected Color _rayColor;
         public bool Started { get; private set; }
@@ -26,6 +29,21 @@ namespace MathForGames
                 _transform.m11 = value.X;
                 _transform.m21 = value.Y;
             }
+        }
+
+        public Vector2 Translate
+        {
+
+        }
+
+        public Vector2 Rotate
+        {
+            
+        }
+
+        public Vector2 Scale
+        {
+            
         }
 
 

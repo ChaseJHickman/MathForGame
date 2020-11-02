@@ -147,6 +147,10 @@ namespace MathForGames
             AddScene(scene2);
 
             SetCurrentScene(startingSceneIndex);
+
+            player.SetScale(1, 2);
+            player.SetRotation(0.5f);
+            player.SetTranslate(new Vector2(10, 10));
         }
 
 

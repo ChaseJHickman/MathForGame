@@ -11,9 +11,9 @@ namespace MathForGames
         protected char _icon = ' ';
         protected Vector2 _velocity;
         protected Matrix3 _transform;
-        protected Matrix3 _translation;
-        protected Matrix3 _rotation;
-        protected Matrix3 _scale;
+        private Matrix3 _translation = new Matrix3();
+        private Matrix3 _rotation = new Matrix3();
+        private Matrix3 _scale = new Matrix3();
         protected ConsoleColor _color;
         protected Color _rayColor;
         public bool Started { get; private set; }
@@ -24,39 +24,44 @@ namespace MathForGames
             {
                 return new Vector2(_transform.m11, _transform.m21); 
             }
-            set
-            {
-                _transform.m11 = value.X;
-                _transform.m21 = value.Y;
-            }
-        }
-
-        public Vector2 Translate
-        {
-
-        }
-
-        public Vector2 Rotate
-        {
             
         }
 
-        public Vector2 Scale
+        public void SetTranslate(Vector2 position)
         {
-            
+            _translation.m13 = position.X;
+            _translation.m23 = position.Y;
         }
 
+        public void SetRotation(float radians)
+        {
+            _rotation.m11 = (float)Math.Cos(radians);
+            _rotation.m12 = (float)Math.Sin(radians);
+            _rotation.m21 = -(float)Math.Sin(radians);
+            _rotation.m22 = (float)Math.Cos(radians);
+        }
+
+        public void SetScale(float x, float y)
+        {
+            _scale.m11 = x;
+            _scale.m22 = y;
+        }
+
+        private void UpdateTransform()
+        {
+            _transform = _translation * _rotation * _scale;
+        }
 
         public Vector2 Position
         {
             get
             {
-                return new Vector2(_transform.m13, _transform.m23);
+                return new Vector2(_translation.m13, _translation.m23);
             }
             set
             {
-                _transform.m13 = value.X;
-                _transform.m23 = value.Y;
+                _translation.m13 = value.X;
+                _translation.m23 = value.Y;
             }
         }
 
@@ -81,7 +86,6 @@ namespace MathForGames
             Position = new Vector2(x, y);
             _velocity = new Vector2();
             _color = color;
-            Forward = new Vector2(1, 0);
         }
 
         public Actor(float x, float y, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
@@ -90,13 +94,7 @@ namespace MathForGames
             _rayColor = rayColor;
         }
 
-        private void UpdateFacing()
-        {
-            if (_velocity.Magnitude <= 0)
-                return;
-
-            Forward = Velocity.Normalized;
-        }
+        
 
         public virtual void Start()
         {
@@ -106,7 +104,7 @@ namespace MathForGames
         
         public virtual void Update(float deltaTime)
         {
-            UpdateFacing();
+            UpdateTransform();
             Position += _velocity * deltaTime;
             Position.X = Math.Clamp(Position.X, 0, Console.WindowWidth-1);
             Position.Y = Math.Clamp(Position.Y, 0, Console.WindowHeight-1);

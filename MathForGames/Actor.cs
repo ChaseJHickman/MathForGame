@@ -10,12 +10,18 @@ namespace MathForGames
     {
         protected char _icon = ' ';
         protected Vector2 _velocity;
+        protected Matrix3 _globalTransform;
+        protected Matrix3 _localTransfrom;
         protected Matrix3 _transform;
+        private Matrix3 _localTransform = new Matrix3();
         private Matrix3 _translation = new Matrix3();
         private Matrix3 _rotation = new Matrix3();
         private Matrix3 _scale = new Matrix3();
         protected ConsoleColor _color;
         protected Color _rayColor;
+        protected Actor _parent;
+        protected Actor[] _children = new Actor[0];
+
         public bool Started { get; private set; }
 
         public Vector2 Forward
@@ -25,6 +31,48 @@ namespace MathForGames
                 return new Vector2(_transform.m11, _transform.m21); 
             }
             
+        }
+
+        public void AddChild(Actor child)
+        {
+            Actor[] tempArray = new Actor[_children.Length + 1];
+
+            for(int i = 0; i < _children.Length; i++)
+            {
+                tempArray[i] = _children[i];
+            }
+
+            tempArray[_children.Length] = child;
+            _children = tempArray;
+            child._parent = this;
+        }
+
+        public bool RemoveChild(Actor child)
+        {
+            bool childRemoved = false;
+
+            if (child == null)
+                return false;
+
+            Actor[] tempArray = new Actor[_children.Length - 1];
+
+            int j = 0;
+            for (int i = 0; i < _children.Length; i++)
+            {
+                if (child != _children[i])
+                {
+                    tempArray[j] = _children[i];
+                    j++;
+                }
+                else
+                {
+                    childRemoved = true;
+                }
+            }
+
+            _children = tempArray;
+            child._parent = null;
+            return childRemoved;
         }
 
         public void SetTranslate(Vector2 position)
@@ -52,11 +100,27 @@ namespace MathForGames
             _transform = _translation * _rotation * _scale;
         }
 
-        public Vector2 Position
+        public Vector2 WorldPosition
         {
             get
             {
-                return new Vector2(_translation.m13, _translation.m23);
+                return new Vector2(_globalTransform.m13, _globalTransform.m23);
+            }
+            set
+            {
+                _translation.m13 = value.X;
+                _translation.m23 = value.Y;
+            }
+
+        }
+
+
+
+        public Vector2 LocalPosition
+        {
+            get
+            {
+                return new Vector2(_localTransform.m13, _localTransform.m23);
             }
             set
             {
@@ -83,7 +147,7 @@ namespace MathForGames
             _rayColor = Color.WHITE;
             _icon = icon;
             _transform = new Matrix3();
-            Position = new Vector2(x, y);
+            LocalPosition = new Vector2(x, y);
             _velocity = new Vector2();
             _color = color;
         }
@@ -105,25 +169,25 @@ namespace MathForGames
         public virtual void Update(float deltaTime)
         {
             UpdateTransform();
-            Position += _velocity * deltaTime;
-            Position.X = Math.Clamp(Position.X, 0, Console.WindowWidth-1);
-            Position.Y = Math.Clamp(Position.Y, 0, Console.WindowHeight-1);
+            LocalPosition += _velocity * deltaTime;
+            LocalPosition.X = Math.Clamp(LocalPosition.X, 0, Console.WindowWidth-1);
+            LocalPosition.Y = Math.Clamp(LocalPosition.Y, 0, Console.WindowHeight-1);
 
         }
 
         public virtual void Draw()
         {
-            Raylib.DrawText(_icon.ToString(), (int)(Position.X * 32), (int)(Position.Y * 32), 32, _rayColor);
+            Raylib.DrawText(_icon.ToString(), (int)(LocalPosition.X * 32), (int)(LocalPosition.Y * 32), 32, _rayColor);
             Raylib.DrawLine(
-                (int)(Position.X * 32),
-                (int)(Position.Y * 32),
-                (int)((Position.X + Forward.X) * 32),
-                (int)((Position.Y + Forward.Y) * 32),
+                (int)(LocalPosition.X * 32),
+                (int)(LocalPosition.Y * 32),
+                (int)((LocalPosition.X + Forward.X) * 32),
+                (int)((LocalPosition.Y + Forward.Y) * 32),
                 Color.WHITE
             );
 
             Console.ForegroundColor = _color;
-            Console.SetCursorPosition((int)Position.X, (int)Position.Y);
+            Console.SetCursorPosition((int)LocalPosition.X, (int)LocalPosition.Y);
             Console.Write(_icon);
             Console.ForegroundColor = Game.DefaultColor;
             

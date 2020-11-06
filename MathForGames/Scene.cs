@@ -14,7 +14,7 @@ namespace MathForGames
 
         public Matrix3 World
         {
-            get { return _transform}
+            get { return _transform; }
         }
 
         public Scene()
@@ -109,6 +109,11 @@ namespace MathForGames
             return actorRemoved;
         }
 
+        private void CheckCollision()
+        {
+            
+        }
+
         public virtual void Start()
         {
             Started = true;
@@ -123,6 +128,7 @@ namespace MathForGames
 
                 _actors[i].Update(deltaTime);
             }
+            CheckCollision();
         }
 
         public virtual void Draw()

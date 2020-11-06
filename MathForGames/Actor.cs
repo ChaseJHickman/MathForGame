@@ -12,7 +12,6 @@ namespace MathForGames
         protected Vector2 _velocity;
         protected Matrix3 _globalTransform;
         protected Matrix3 _localTransfrom;
-        protected Matrix3 _transform;
         private Matrix3 _localTransform = new Matrix3();
         private Matrix3 _translation = new Matrix3();
         private Matrix3 _rotation = new Matrix3();
@@ -21,6 +20,7 @@ namespace MathForGames
         protected Color _rayColor;
         protected Actor _parent;
         protected Actor[] _children = new Actor[0];
+        private float _collisionRadius;
 
         public bool Started { get; private set; }
 
@@ -28,7 +28,7 @@ namespace MathForGames
         {
             get 
             {
-                return new Vector2(_transform.m11, _transform.m21); 
+                return new Vector2(_globalTransform.m11, _globalTransform.m21); 
             }
             
         }
@@ -95,9 +95,30 @@ namespace MathForGames
             _scale.m22 = y;
         }
 
-        private void UpdateTransform()
+        public bool CheckCollision(Actor other)
         {
-            _transform = _translation * _rotation * _scale;
+            return false;
+        }
+
+        public virtual void OnCollision(Actor other)
+        {
+
+        }
+
+        public void UpdateLocalTransform()
+        {
+            _localTransform = _translation * _rotation * _scale;
+        }
+
+        public void UpdateGlobalTransform()
+        {
+            if (_parent != null)
+            {
+                _globalTransform = _parent._globalTransform * _localTransform;
+            }
+            else
+                _globalTransform = _localTransform;
+           
         }
 
         public Vector2 WorldPosition
@@ -146,7 +167,7 @@ namespace MathForGames
         {
             _rayColor = Color.WHITE;
             _icon = icon;
-            _transform = new Matrix3();
+            _globalTransform = new Matrix3();
             LocalPosition = new Vector2(x, y);
             _velocity = new Vector2();
             _color = color;
@@ -168,7 +189,7 @@ namespace MathForGames
         
         public virtual void Update(float deltaTime)
         {
-            UpdateTransform();
+            UpdateLocalTransform();
             LocalPosition += _velocity * deltaTime;
             LocalPosition.X = Math.Clamp(LocalPosition.X, 0, Console.WindowWidth-1);
             LocalPosition.Y = Math.Clamp(LocalPosition.Y, 0, Console.WindowHeight-1);

@@ -81,7 +81,7 @@ namespace MathForGames
 
         public override void Draw()
         {
-            _sprite.Draw(_transform);
+            _sprite.Draw(_globalTransform);
             base.Draw();
         }
     }

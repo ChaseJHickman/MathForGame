@@ -8,6 +8,7 @@ namespace MathForGames
 {
     class Actor
     {
+        protected Scene _scene;
         protected char _icon = ' ';
         protected Vector2 _velocity;
         protected Matrix3 _globalTransform;
@@ -117,7 +118,7 @@ namespace MathForGames
                 _globalTransform = _parent._globalTransform * _localTransform;
             }
             else
-                _globalTransform = _localTransform;
+                _globalTransform = _localTransform * _scene.World;
            
         }
 
@@ -163,8 +164,9 @@ namespace MathForGames
         }
 
 
-        public Actor(float x, float y, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+        public Actor(float x, float y, Scene scene, char icon = ' ', ConsoleColor color = ConsoleColor.White)
         {
+            _scene = scene;
             _rayColor = Color.WHITE;
             _icon = icon;
             _globalTransform = new Matrix3();
@@ -173,8 +175,8 @@ namespace MathForGames
             _color = color;
         }
 
-        public Actor(float x, float y, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : this(x,y,icon,color)
+        public Actor(float x, float y, Scene scene, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+            : this(x,y,scene,icon,color)
         {
             _rayColor = rayColor;
         }
@@ -198,12 +200,12 @@ namespace MathForGames
 
         public virtual void Draw()
         {
-            Raylib.DrawText(_icon.ToString(), (int)(LocalPosition.X * 32), (int)(LocalPosition.Y * 32), 32, _rayColor);
+            Raylib.DrawText(_icon.ToString(), (int)(WorldPosition.X * 32), (int)(WorldPosition.Y * 32), 32, _rayColor);
             Raylib.DrawLine(
-                (int)(LocalPosition.X * 32),
-                (int)(LocalPosition.Y * 32),
-                (int)((LocalPosition.X + Forward.X) * 32),
-                (int)((LocalPosition.Y + Forward.Y) * 32),
+                (int)(WorldPosition.X * 32),
+                (int)(WorldPosition.Y * 32),
+                (int)((WorldPosition.X + Forward.X) * 32),
+                (int)((WorldPosition.Y + Forward.Y) * 32),
                 Color.WHITE
             );
 

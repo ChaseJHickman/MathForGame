@@ -17,14 +17,14 @@ namespace MathForGames
             set { _target = value; }
         }
 
-        public Enemy(float x, float y, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, icon, color)
+        public Enemy(float x, float y, Scene scene, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+            : base(x, y, scene, icon, color)
         {
             _sprite = new Sprite("Images/enemy.png");
         }
 
-        public Enemy(float x, float y, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, rayColor, icon, color)
+        public Enemy(float x, float y, Scene scene, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+            : base(x, y, scene, rayColor, icon, color)
         {
             _sprite = new Sprite("Images/enemy.png");
             _alertColor = Color.RED;

@@ -128,11 +128,11 @@ namespace MathForGames
             Scene scene2 = new Scene();
 
             //Creates two actors to add to our scene
-            Actor actor = new Actor(0,0,Color.GREEN,'■',ConsoleColor.Green);
+            Actor actor = new Actor(0,0,scene1,Color.GREEN,'■',ConsoleColor.Green);
             actor.Velocity.X = 1;
 
-            Enemy enemy = new Enemy(10, 10, Color.GREEN, '■', ConsoleColor.Green);
-            Player player = new Player(0, 1,Color.BLUE, '@', ConsoleColor.Red);
+            Enemy enemy = new Enemy(10, 10, scene1, Color.GREEN, '■', ConsoleColor.Green);
+            Player player = new Player(0, 1, scene1, Color.BLUE, '@', ConsoleColor.Red);
             enemy.Target = player;
             scene1.AddActor(player);
             scene1.AddActor(actor);
@@ -151,6 +151,8 @@ namespace MathForGames
             player.SetScale(1, 2);
             player.SetRotation(0.5f);
             player.SetTranslate(new Vector2(10, 10));
+
+            player.AddChild(enemy);
         }
 
 

@@ -24,14 +24,14 @@ namespace MathForGames
         }
 
 
-        public Player(float x, float y, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, icon, color)
+        public Player(float x, float y, Scene scene, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+            : base(x, y, scene, icon, color)
         {
             _sprite = new Sprite("Images/player.png");
         }
 
-        public Player(float x, float y, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, rayColor, icon, color)
+        public Player(float x, float y, Scene scene, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+            : base(x, y, scene, rayColor, icon, color)
         {
             _sprite = new Sprite("Images/player.png");
         }

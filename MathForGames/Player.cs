@@ -47,23 +47,23 @@ namespace MathForGames
             Velocity = new Vector2(xVelocity, yVelocity);
             Velocity = Velocity.Normalized * Speed;
 
-            if (xVelocity >= 1)
-            {
-                SetRotation(0);
-            }
-            else if (xVelocity <= -1)
-            {
-                SetRotation(-(float)Math.PI);
-            }
+            //if (xVelocity >= 1)
+            //{
+            //    SetRotation(0);
+            //}
+            //else if (xVelocity <= -1)
+            //{
+            //    SetRotation(-(float)Math.PI);
+            //}
 
-            if (yVelocity <= -1)
-            {
-                SetRotation((float)Math.PI / 2);
-            }
-            else if (yVelocity >= 1)
-            {
-                SetRotation((float)(3 * Math.PI / 2));
-            }
+            //if (yVelocity <= -1)
+            //{
+            //    SetRotation((float)Math.PI / 2);
+            //}
+            //else if (yVelocity >= 1)
+            //{
+            //    SetRotation((float)(3 * Math.PI / 2));
+            //}
 
             
             //float dotproda = Vector2.DotProduct(Velocity, new Vector2 (1, 0));

@@ -12,7 +12,6 @@ namespace MathForGames
         protected char _icon = ' ';
         protected Vector2 _velocity;
         protected Matrix3 _globalTransform;
-        protected Matrix3 _localTransfrom;
         private Matrix3 _localTransform = new Matrix3();
         private Matrix3 _translation = new Matrix3();
         private Matrix3 _rotation = new Matrix3();
@@ -21,7 +20,7 @@ namespace MathForGames
         protected Color _rayColor;
         protected Actor _parent;
         protected Actor[] _children = new Actor[0];
-        private float _collisionRadius;
+        private float _collisionRadius = 0.5f;
 
         public bool Started { get; private set; }
 
@@ -78,22 +77,17 @@ namespace MathForGames
 
         public void SetTranslate(Vector2 position)
         {
-            _translation.m13 = position.X;
-            _translation.m23 = position.Y;
+            _translation = Matrix3.CreateTranslation(position);
         }
 
         public void SetRotation(float radians)
         {
-            _rotation.m11 = (float)Math.Cos(radians);
-            _rotation.m12 = (float)Math.Sin(radians);
-            _rotation.m21 = -(float)Math.Sin(radians);
-            _rotation.m22 = (float)Math.Cos(radians);
+            _rotation = Matrix3.CreateRotation(radians);
         }
 
         public void SetScale(float x, float y)
         {
-            _scale.m11 = x;
-            _scale.m22 = y;
+            _scale = Matrix3.CreateScale(new Vector2(x,y));
         }
 
         public bool CheckCollision(Actor other)
@@ -109,6 +103,11 @@ namespace MathForGames
         public void UpdateLocalTransform()
         {
             _localTransform = _translation * _rotation * _scale;
+
+            if (_parent != null)
+                _globalTransform = _parent._globalTransform * _localTransform;
+            else
+                _globalTransform = Game.GetCurrentScene().World * _localTransform;
         }
 
         public void UpdateGlobalTransform()
@@ -170,6 +169,7 @@ namespace MathForGames
             _rayColor = Color.WHITE;
             _icon = icon;
             _globalTransform = new Matrix3();
+            _localTransform = new Matrix3();
             LocalPosition = new Vector2(x, y);
             _velocity = new Vector2();
             _color = color;
@@ -191,7 +191,11 @@ namespace MathForGames
         
         public virtual void Update(float deltaTime)
         {
+            if(Velocity.Magnitude != 0)
+                SetRotation(-(float)Math.Atan2(Velocity.Y, Velocity.X));
+
             UpdateLocalTransform();
+            UpdateGlobalTransform();
             LocalPosition += _velocity * deltaTime;
             LocalPosition.X = Math.Clamp(LocalPosition.X, 0, Console.WindowWidth-1);
             LocalPosition.Y = Math.Clamp(LocalPosition.Y, 0, Console.WindowHeight-1);
@@ -210,7 +214,6 @@ namespace MathForGames
             );
 
             Console.ForegroundColor = _color;
-            Console.SetCursorPosition((int)LocalPosition.X, (int)LocalPosition.Y);
             Console.Write(_icon);
             Console.ForegroundColor = Game.DefaultColor;
             

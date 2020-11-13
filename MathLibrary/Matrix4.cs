@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MathLibrary
 {
-    class Matrix4
+    public class Matrix4
     {
         public float m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44;
 
@@ -28,6 +28,26 @@ namespace MathLibrary
             this.m41 = m41; this.m42 = m42; this.m43 = m43; this.m44 = m44;
         }
 
+        public static Matrix4 CreateRotationX(float radians)
+        {
+            return new Matrix4(
+                1, 0, 0, 0,
+                0, (float)Math.Cos(radians), (float)Math.Sin(radians), 0,
+                0, -(float)Math.Sin(radians), (float)Math.Cos(radians), 0,
+                0, 0, 0, 1
+                );  
+        }
+
+
+        public static Matrix4 CreateRotationY(float radians)
+        {
+            return new Matrix4(
+                (float)Math.Cos(radians), 0, -(float)Math.Sin(radians), 0,
+                0, 1, 0, 0,
+                (float)Math.Sin(radians), 0, (float)Math.Cos(radians), 0,
+                0, 0, 0, 1
+                );
+        }
 
         /// <summary>
         /// Creates a new matrix that has been rotated by the given radians
@@ -141,5 +161,7 @@ namespace MathLibrary
                     lhs.m44 * rhs.m14 + lhs.m42 * rhs.m24 + lhs.m43 * rhs.m34 + lhs.m44 * rhs.m44
                 );
         }
+
+        
     }
 }

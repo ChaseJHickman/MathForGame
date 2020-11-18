@@ -107,7 +107,7 @@ namespace MathForGames
             if (_parent != null)
                 _globalTransform = _parent._globalTransform * _localTransform;
             else
-                _globalTransform = Game.GetCurrentScene().World * _localTransform;
+                _globalTransform = Engine.GetCurrentScene().World * _localTransform;
         }
 
         public void UpdateGlobalTransform()
@@ -215,7 +215,7 @@ namespace MathForGames
 
             Console.ForegroundColor = _color;
             Console.Write(_icon);
-            Console.ForegroundColor = Game.DefaultColor;
+            Console.ForegroundColor = Engine.DefaultColor;
             
 
         }

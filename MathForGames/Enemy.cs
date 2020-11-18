@@ -30,7 +30,11 @@ namespace MathForGames
             _alertColor = Color.RED;
         }
 
-
+        public override void Start()
+        {
+            GameManager.enemyCount++;
+            base.Start();
+        }
 
         public bool CheckTargetInSight(float maxAngle, float maxDistance)
         {
@@ -61,5 +65,6 @@ namespace MathForGames
             }
             base.Update(deltaTime);
         }
+
     }
 }

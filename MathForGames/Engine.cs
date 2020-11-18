@@ -8,7 +8,7 @@ using Raylib_cs;
 
 namespace MathForGames
 {
-    class Game
+    class Engine
     {
         private static bool _gameOver = false;
         private static Scene[] _scenes;
@@ -107,7 +107,7 @@ namespace MathForGames
             return Raylib.IsKeyPressed((KeyboardKey)key);
         }
 
-        public Game()
+        public Engine()
         {
             _scenes = new Scene[0];
         }
@@ -192,7 +192,7 @@ namespace MathForGames
         {
             Start();
 
-            while(!_gameOver && !Raylib.WindowShouldClose())
+            while(!GameManager.Gameover && !Raylib.WindowShouldClose())
             {
                 float deltaTime = Raylib.GetFrameTime();
                 Update(deltaTime);

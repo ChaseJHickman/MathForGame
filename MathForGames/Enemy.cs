@@ -18,21 +18,29 @@ namespace MathForGames
         }
 
         public Enemy(float x, float y, Scene scene, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, scene, icon, color)
+            : base(x, y, icon, color)
         {
             _sprite = new Sprite("Images/enemy.png");
         }
 
         public Enemy(float x, float y, Scene scene, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, scene, rayColor, icon, color)
+            : base(x, y, rayColor, icon, color)
         {
             _sprite = new Sprite("Images/enemy.png");
             _alertColor = Color.RED;
         }
 
+        public override void OnCollision(Actor other)
+        {
+            if (other is Actor)
+            {
+                Game.SetGameOver(true);
+            }
+            base.OnCollision(other);
+        }
+
         public override void Start()
         {
-            GameManager.enemyCount++;
             base.Start();
         }
 
@@ -64,6 +72,12 @@ namespace MathForGames
                 _rayColor = Color.BLUE;
             }
             base.Update(deltaTime);
+        }
+
+        public override void Draw()
+        {
+            _sprite.Draw(_globalTransform);
+            base.Draw();
         }
 
     }

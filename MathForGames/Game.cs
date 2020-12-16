@@ -8,7 +8,7 @@ using Raylib_cs;
 
 namespace MathForGames
 {
-    class Engine
+    class Game
     {
         private static bool _gameOver = false;
         private static Scene[] _scenes;
@@ -107,7 +107,7 @@ namespace MathForGames
             return Raylib.IsKeyPressed((KeyboardKey)key);
         }
 
-        public Engine()
+        public Game()
         {
             _scenes = new Scene[0];
         }
@@ -128,14 +128,13 @@ namespace MathForGames
             Scene scene2 = new Scene();
 
             //Creates two actors to add to our scene
-            Actor actor = new Actor(0,0,scene1,Color.GREEN,'■',ConsoleColor.Green);
-            actor.Velocity.X = 1;
+            Goal goal = new Goal(5,5,Color.GREEN,'■',ConsoleColor.Green);
 
             Enemy enemy = new Enemy(2, 1, scene1, Color.GREEN, '■', ConsoleColor.Green);
             Player player = new Player(0, 1, scene1, Color.BLUE, '@', ConsoleColor.Red);
             enemy.Target = player;
             scene1.AddActor(player);
-            scene1.AddActor(actor);
+            scene1.AddActor(goal);
             scene1.AddActor(enemy);
 
             scene2.AddActor(player);
@@ -151,6 +150,8 @@ namespace MathForGames
             player.SetScale(1, 2);
             player.SetRotation(0.5f);
             player.SetTranslate(new Vector2(10, 10));
+            goal.SetTranslate(new Vector2(5, 5));
+            goal.SetScale(3.5f, 3.5f);
 
             player.AddChild(enemy);
         }
@@ -184,6 +185,8 @@ namespace MathForGames
         {
             if (_scenes[_currentSceneIndex].Started)
                 _scenes[_currentSceneIndex].End();
+
+
         }
 
 
@@ -192,7 +195,7 @@ namespace MathForGames
         {
             Start();
 
-            while(!GameManager.Gameover && !Raylib.WindowShouldClose())
+            while(!_gameOver && !Raylib.WindowShouldClose())
             {
                 float deltaTime = Raylib.GetFrameTime();
                 Update(deltaTime);

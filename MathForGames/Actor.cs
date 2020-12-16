@@ -8,8 +8,8 @@ namespace MathForGames
 {
     class Actor
     {
-        protected Scene _scene;
         protected char _icon = ' ';
+        protected Vector2 _acceleration = new Vector2();
         protected Vector2 _velocity;
         protected Matrix3 _globalTransform;
         private Matrix3 _localTransform = new Matrix3();
@@ -20,7 +20,7 @@ namespace MathForGames
         protected Color _rayColor;
         protected Actor _parent;
         protected Actor[] _children = new Actor[0];
-        private float _collisionRadius = 0.5f;
+        protected float _collisionRadius;
 
         public bool Started { get; private set; }
 
@@ -92,12 +92,13 @@ namespace MathForGames
 
         public bool CheckCollision(Actor other)
         {
-            return false;
+            float distance = (other.WorldPosition - WorldPosition).Magnitude;
+            return distance <= other._collisionRadius + _collisionRadius;
         }
 
         public virtual void OnCollision(Actor other)
         {
-
+             
         }
 
         public void UpdateLocalTransform()
@@ -107,7 +108,7 @@ namespace MathForGames
             if (_parent != null)
                 _globalTransform = _parent._globalTransform * _localTransform;
             else
-                _globalTransform = Engine.GetCurrentScene().World * _localTransform;
+                _globalTransform = Game.GetCurrentScene().World * _localTransform;
         }
 
         public void UpdateGlobalTransform()
@@ -117,7 +118,7 @@ namespace MathForGames
                 _globalTransform = _parent._globalTransform * _localTransform;
             }
             else
-                _globalTransform = _localTransform * _scene.World;
+                _globalTransform = _localTransform;
            
         }
 
@@ -163,9 +164,9 @@ namespace MathForGames
         }
 
 
-        public Actor(float x, float y, Scene scene, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+
+        public Actor(float x, float y, char icon = ' ', ConsoleColor color = ConsoleColor.White)
         {
-            _scene = scene;
             _rayColor = Color.WHITE;
             _icon = icon;
             _globalTransform = new Matrix3();
@@ -175,8 +176,8 @@ namespace MathForGames
             _color = color;
         }
 
-        public Actor(float x, float y, Scene scene, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : this(x,y,scene,icon,color)
+        public Actor(float x, float y, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
+            : this(x,y,icon,color)
         {
             _rayColor = rayColor;
         }
@@ -196,6 +197,7 @@ namespace MathForGames
 
             UpdateLocalTransform();
             UpdateGlobalTransform();
+            Velocity += _acceleration;
             LocalPosition += _velocity * deltaTime;
             LocalPosition.X = Math.Clamp(LocalPosition.X, 0, Console.WindowWidth-1);
             LocalPosition.Y = Math.Clamp(LocalPosition.Y, 0, Console.WindowHeight-1);
@@ -204,18 +206,18 @@ namespace MathForGames
 
         public virtual void Draw()
         {
-            Raylib.DrawText(_icon.ToString(), (int)(WorldPosition.X * 32), (int)(WorldPosition.Y * 32), 32, _rayColor);
-            Raylib.DrawLine(
-                (int)(WorldPosition.X * 32),
-                (int)(WorldPosition.Y * 32),
-                (int)((WorldPosition.X + Forward.X) * 32),
-                (int)((WorldPosition.Y + Forward.Y) * 32),
-                Color.WHITE
-            );
+            //Raylib.DrawText(_icon.ToString(), (int)(WorldPosition.X * 32), (int)(WorldPosition.Y * 32), 32, _rayColor);
+            //Raylib.DrawLine(
+            //    (int)(WorldPosition.X * 32),
+            //    (int)(WorldPosition.Y * 32),
+            //    (int)((WorldPosition.X + Forward.X) * 32),
+            //    (int)((WorldPosition.Y + Forward.Y) * 32),
+            //    Color.WHITE
+            //);
 
             Console.ForegroundColor = _color;
             Console.Write(_icon);
-            Console.ForegroundColor = Engine.DefaultColor;
+            Console.ForegroundColor = Game.DefaultColor;
             
 
         }

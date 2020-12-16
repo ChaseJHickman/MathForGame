@@ -23,26 +23,37 @@ namespace MathForGames
             }
         }
 
+        public override void OnCollision(Actor other)
+        {
+            if(other is Goal)
+            {
+                Game.SetGameOver(true);
+            }
+            base.OnCollision(other);
+        }
+
 
         public Player(float x, float y, Scene scene, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, scene, icon, color)
+            : base(x, y, icon, color)
         {
-            _sprite = new Sprite("Images/player.png");
+            
         }
 
         public Player(float x, float y, Scene scene, Color rayColor, char icon = ' ', ConsoleColor color = ConsoleColor.White)
-            : base(x, y, scene, rayColor, icon, color)
+            : base(x, y, rayColor, icon, color)
         {
             _sprite = new Sprite("Images/player.png");
+            _collisionRadius = 1;
         }
+
 
         public override void Update(float deltaTime)
         {
-            int xVelocity = -Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_A))
-                + Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_D));
+            int xVelocity = -Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_A))
+                + Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_D));
 
-            int yVelocity = -Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_W))
-                + Convert.ToInt32(Engine.GetKeyDown((int)KeyboardKey.KEY_S));
+            int yVelocity = -Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_W))
+                + Convert.ToInt32(Game.GetKeyDown((int)KeyboardKey.KEY_S));
 
             Velocity = new Vector2(xVelocity, yVelocity);
             Velocity = Velocity.Normalized * Speed;
